@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>WorldSkills</title>
+    <title>Такси</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
@@ -13,12 +13,13 @@
     window.STORE = <? print_r(json_encode($RESULT))?>;
     window._GET = <?= json_encode($_GET)?>;
     window._POST = <?= json_encode($_POST)?>;
+    window.SETTINGS = <?= json_encode($SETTINGS)?>;
 
 </script>
 <div class="alerts"></div>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-    <a class="navbar-brand" href="#">Форум</a>
+    <a class="navbar-brand" href="#">Такси</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>

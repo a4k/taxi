@@ -1,17 +1,14 @@
 <?php
 
-$DB = new PDO('mysql:host=localhost;dbname=worldapi', 'mysql', 'mysql');
+$SETTINGS = include 'config/config.php';
+$dbSettings = $SETTINGS['DB'];
+
+$DB = new PDO("mysql:host=localhost;dbname={$dbSettings['dbname']}",
+    $dbSettings['username'], $dbSettings['password']);
+
 
 $tables = [
     'users' => ['login', 'password', 'created_at', 'updated_at', 'deleted_at', 'group_id'],
-    'topics' => ['title', 'content', 'parent_id', 'level',
-        'owner_login', 'is_championship', 'manager_login',
-        'created_at', 'updated_at', 'deleted_at'],
-    'themes' => ['title', 'content', 'parent_id', 'type', 'owner_login',
-        'created_at', 'updated_at', 'deleted_at'],
-    'messages' => ['content', 'qu_content', 'parent_id', 'owner_login',
-        'created_at', 'updated_at', 'deleted_at'],
-    'theme_users' => ['theme_id', 'login', 'created_at', 'updated_at', 'deleted_at'],
 ];
 
 $RESULT = [];
@@ -113,11 +110,10 @@ if (isset($_POST['api']) && $_POST['api'] === 'update') {
     print_r(json_encode(['status' => true]));
 }
 
-function getTopicById($id) {
-
+function getUserByLogin($login) {
     global $RESULT;
-    foreach ($RESULT['topics'] as $topic) {
-        if($topic['id'] === $id) return $topic;
+    foreach ($RESULT['users'] as $user) {
+        if($user['login'] === $login) return $user;
     }
 
     return false;

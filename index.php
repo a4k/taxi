@@ -5,7 +5,7 @@ require "head.php";
 require "header.php";
 
 global $USER;
-if(!isset($USER)) {
+if (!isset($USER)) {
     ?>
     <script>
         window.location.href = '/login.php';
@@ -15,14 +15,25 @@ if(!isset($USER)) {
 }
 ?>
 
-    <h1>Приветсвуем вас на сайте</h1>
 
-    <div class="btn-group mb-3" role="group" aria-label="Basic example">
-        <a href="#" class="btn btn-primary addTopic" data-parent="0" data-level="1">Добавить раздел</a>
+<? if (isDriver($USER)): ?>
+    <h1>Дашбоард водителя</h1>
+
+    <div class="text">
+        <p>Список доступных поездок:</p>
     </div>
     <div class="list-group" id="topicsAll" data-parent="0" data-level="1">
 
     </div>
+<? elseif (isAdmin($USER)): ?>
+    <h1>Панель администратора</h1>
+
+<? else: ?>
+    <h1>Дашбоард клиента</h1>
+
+
+<? endif; ?>
+
 <?
 require "footer.php";
 
