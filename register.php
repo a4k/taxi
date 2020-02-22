@@ -2,8 +2,6 @@
 
 require "head.php";
 
-require "header.php";
-
 ?>
 
 <form id="registerForm" method="post" action="">

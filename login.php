@@ -1,7 +1,6 @@
 <?php
 
 require "head.php";
-require "header.php";
 if(isset($USER)) {
     ?>
     <script>
