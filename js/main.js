@@ -7,9 +7,11 @@ var SETTINGS = window.SETTINGS || {};
 let $db = new DB();
 let $api = new API();
 let $user = new User();
+let $orders = new Orders();
 
 $api.get();
 $user.init();
+$orders.init();
 
 
 function ok(msg) {
@@ -162,6 +164,37 @@ function User() {
     }
 }
 
+function Orders() {
+
+    let tableName = 'orders';
+
+    this.add = (arParams = {}, done) => {
+        arParams['created_at'] = 1;
+        STORE[tableName].push(arParams);
+
+        $api.update(function (resp) {
+            $api.get();
+            done(ok('Заказ добавлен'));
+        });
+
+    };
+
+    this.getByField = (key, value) => {
+        return $db.getByField(tableName, key, value);
+    };
+
+    this.getAll = (arParams = {}) => {
+        return STORE[tableName];
+    };
+
+    this.init = () => {
+    };
+
+    this.renderAll = () => {
+
+    }
+
+}
 
 
 /*

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Фев 21 2020 г., 21:27
+-- Время создания: Фев 22 2020 г., 07:54
 -- Версия сервера: 5.6.38
 -- Версия PHP: 7.0.26
 
@@ -21,6 +21,26 @@ SET time_zone = "+00:00";
 --
 -- База данных: `taxi`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `orders`
+--
+
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL,
+  `created_at` varchar(64) NOT NULL,
+  `updated_at` varchar(64) NOT NULL,
+  `deleted_at` varchar(64) NOT NULL,
+  `owner_login` varchar(128) NOT NULL,
+  `status` varchar(64) NOT NULL DEFAULT 'FREE',
+  `place_from` varchar(512) NOT NULL,
+  `place_to` varchar(512) NOT NULL,
+  `description` varchar(512) NOT NULL,
+  `driver` varchar(128) NOT NULL,
+  `cost` varchar(128) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -52,6 +72,12 @@ INSERT INTO `users` (`id`, `login`, `password`, `created_at`, `updated_at`, `del
 --
 
 --
+-- Индексы таблицы `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `users`
 --
 ALTER TABLE `users`
@@ -60,6 +86,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT для сохранённых таблиц
 --
+
+--
+-- AUTO_INCREMENT для таблицы `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `users`

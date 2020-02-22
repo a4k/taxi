@@ -9,6 +9,10 @@ $DB = new PDO("mysql:host=localhost;dbname={$dbSettings['dbname']}",
 
 $tables = [
     'users' => ['login', 'password', 'created_at', 'updated_at', 'deleted_at', 'group_id'],
+    'orders' => [
+        'owner_login', 'status', 'place_from', 'place_to',
+        'description', 'driver', 'cost',
+        'created_at', 'updated_at', 'deleted_at'],
 ];
 
 $RESULT = [];
