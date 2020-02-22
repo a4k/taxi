@@ -1,5 +1,6 @@
 <?php
 
+$SITE_DIR = __DIR__;
 $USER = $_COOKIE['user'];
 
 require "api.php";

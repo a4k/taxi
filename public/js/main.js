@@ -188,6 +188,23 @@ function Orders() {
     };
 
     this.init = () => {
+        this.submitForm();
+    };
+
+    this.submitForm = () => {
+        $('#orderForm').on('submit', function(e) {
+            e.preventDefault();
+
+            let data = getInputs(this);
+
+            $orders.add(data, function (result) {
+                debugger
+                let type = (result['status']) ? 'success' : 'danger';
+                showMessage(type, result['data']);
+            });
+
+            return false;
+        })
     };
 
     this.renderAll = () => {

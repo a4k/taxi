@@ -3,6 +3,8 @@
 $SETTINGS = include 'config/config.php';
 $dbSettings = $SETTINGS['DB'];
 
+$app = new App($SETTINGS);
+
 $DB = new PDO("mysql:host=localhost;dbname={$dbSettings['dbname']}",
     $dbSettings['username'], $dbSettings['password']);
 
@@ -11,7 +13,7 @@ $tables = [
     'users' => ['login', 'password', 'created_at', 'updated_at', 'deleted_at', 'group_id'],
     'orders' => [
         'owner_login', 'status', 'place_from', 'place_to',
-        'description', 'driver', 'cost',
+        'description', 'driver', 'cost', 'car_class',
         'created_at', 'updated_at', 'deleted_at'],
 ];
 

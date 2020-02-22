@@ -33,10 +33,10 @@
 </div>
 
 
-<script src="/js/jquery.js"></script>
-<script src="/js/main.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/popper.min.js"></script>
+<script src="/public/js/jquery.js"></script>
+<script src="/public/js/main.js"></script>
+<script src="/public/js/bootstrap.min.js"></script>
+<script src="/public/js/popper.min.js"></script>
 
 </body>
 </html>
