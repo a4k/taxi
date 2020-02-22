@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Фев 22 2020 г., 07:54
+-- Время создания: Фев 22 2020 г., 10:25
 -- Версия сервера: 5.6.38
 -- Версия PHP: 7.0.26
 
@@ -39,8 +39,16 @@ CREATE TABLE `orders` (
   `place_to` varchar(512) NOT NULL,
   `description` varchar(512) NOT NULL,
   `driver` varchar(128) NOT NULL,
-  `cost` varchar(128) NOT NULL DEFAULT '0'
+  `cost` varchar(128) NOT NULL DEFAULT '0',
+  `car_class` varchar(64) NOT NULL DEFAULT 'ECONOM'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `orders`
+--
+
+INSERT INTO `orders` (`id`, `created_at`, `updated_at`, `deleted_at`, `owner_login`, `status`, `place_from`, `place_to`, `description`, `driver`, `cost`, `car_class`) VALUES
+(1, '1582355794', '', '', 'client', 'FREE', '', 'ул. Удмуртская', '', '', '100', 'ECONOM');
 
 -- --------------------------------------------------------
 
@@ -91,13 +99,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
