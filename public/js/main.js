@@ -198,7 +198,6 @@ function Orders() {
             let data = getInputs(this);
 
             $orders.add(data, function (result) {
-                debugger
                 let type = (result['status']) ? 'success' : 'danger';
                 showMessage(type, result['data']);
             });
@@ -207,7 +206,7 @@ function Orders() {
         })
     };
 
-    this.renderAll = () => {
+    this.renderClientHistory = () => {
 
     }
 
@@ -227,6 +226,9 @@ function getInputs(context) {
 
 function updateElements() {
 
+    if($('#orderClientList').length) {
+        $orders.renderClientHistory();
+    }
 
     checkRights();
 }
