@@ -40,37 +40,10 @@ class m200222_152311_orders extends Migration
             'updated_at' => $this->integer(),
         ]);
 
-        $this->addForeignKey(
-            'fk-orders-drive_class_id',
-            'orders',
-            'drive_class_id',
-            'drive_class',
-            'id',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-orders-driver_id',
-            'orders',
-            'driver_id',
-            'users',
-            'id',
-            'CASCADE'
-        );
     }
 
     public function down()
     {
-        // drops foreign key for table `drive_class`
-        $this->dropForeignKey(
-            'fk-orders-drive_class_id',
-            'drive_class'
-        );
-
-        $this->dropForeignKey(
-            'fk-orders-driver_id',
-            'users'
-        );
 
         $this->dropTable('orders');
 

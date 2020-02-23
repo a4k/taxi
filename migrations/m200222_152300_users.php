@@ -3,7 +3,10 @@
 use yii\db\Migration;
 
 /**
- * Class m200222_152300_users
+ * Handles the creation for table `users`.
+ * Has foreign keys to the tables:
+ *
+ * - `groups`
  */
 class m200222_152300_users extends Migration
 {
@@ -38,23 +41,10 @@ class m200222_152300_users extends Migration
             'group_id' => $this->integer(),
         ]);
 
-        $this->addForeignKey(
-            'fk-users-group_id',
-            'users',
-            'group_id',
-            'groups',
-            'id',
-            'CASCADE'
-        );
     }
 
     public function down()
     {
-        // drops foreign key for table `groups`
-        $this->dropForeignKey(
-            'fk-users-group_id',
-            'groups'
-        );
 
         $this->dropTable('users');
 
