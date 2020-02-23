@@ -7,24 +7,6 @@ use yii\db\Migration;
  */
 class m200222_152311_orders extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function safeUp()
-    {
-
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function safeDown()
-    {
-        echo "m200222_152311_orders cannot be reverted.\n";
-
-        return false;
-    }
-
 
     // Use up()/down() to run migration code without a transaction.
     public function up()
@@ -34,7 +16,7 @@ class m200222_152311_orders extends Migration
             'from' => $this->string(),
             'to' => $this->string(),
             'total' => $this->integer(),
-            'drive_class_id' => $this->integer(),
+            'drive_class' => $this->string(),
             'driver_id' => $this->integer(),
             'status' => $this->string()->defaultValue('FREE'),
             'updated_at' => $this->integer(),

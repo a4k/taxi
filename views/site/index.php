@@ -12,8 +12,8 @@ $this->title = 'My Yii Application';
         <p class="lead">Вы можете заказать такси через личный кабинет или стать водителем.</p>
 
         <p>
-            <a class="btn btn-lg btn-success" href="/web/site/register_client">Регистрация клиента</a>
-            <a class="btn btn-lg btn-default" href="/web/site/register_driver">Регистрация водителя</a>
+            <a class="btn btn-lg btn-success" href="/web/site/signup">Регистрация клиента</a>
+            <a class="btn btn-lg btn-default" href="/web/site/signup_driver">Регистрация водителя</a>
         </p>
     </div>
 
