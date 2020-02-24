@@ -38,20 +38,20 @@ class User extends ActiveRecord implements IdentityInterface
         return static::findOne(['access_token' => $token]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getGroupId()
     {
         return $this->group_id;
+    }
+
+    public function getPhone()
+    {
+        return $this->phone;
     }
 
     /**

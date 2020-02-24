@@ -3,10 +3,7 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation for table `users`.
- * Has foreign keys to the tables:
- *
- * - `groups`
+ * Class m200222_152300_users
  */
 class m200222_152300_users extends Migration
 {
@@ -38,7 +35,6 @@ class m200222_152300_users extends Migration
 
         $this->dropTable('users');
 
-        return false;
     }
 
 }

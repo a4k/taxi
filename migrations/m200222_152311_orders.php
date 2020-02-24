@@ -17,9 +17,14 @@ class m200222_152311_orders extends Migration
             'to' => $this->string(),
             'total' => $this->integer(),
             'drive_class' => $this->string(),
-            'driver_id' => $this->integer(),
             'status' => $this->string()->defaultValue('FREE'),
+            'user_id' => $this->integer(),
+            'phone' => $this->string(),
+            'driver_id' => $this->integer(),
+
+            'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
+            'deleted_at' => $this->integer(),
         ]);
 
     }
@@ -29,6 +34,5 @@ class m200222_152311_orders extends Migration
 
         $this->dropTable('orders');
 
-        return false;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this yii\web\View */
+/* @var $modelOrder app\models\OrderForm */
 
 $this->title = 'My Yii Application';
 ?>
@@ -56,7 +57,7 @@ $this->title = 'My Yii Application';
 
             <div class="body-content">
 
-                sdijf
+                <?= $this->render('order', ['model' => $modelOrder]); ?>
 
             </div>
         <? elseif ($userGroupId == 'DRIVER'):?>

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\OrderForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -59,7 +60,19 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $modelOrder = false;
+        if (!Yii::$app->user->isGuest) {
+            $modelOrder = new OrderForm();
+            if ($modelOrder->load(Yii::$app->request->post()) && $modelOrder->order()) {
+                Yii::$app->session->setFlash('success',
+                    'Спасибо за заказ такси. Можете отследить ваш заказ в истории');
+                return $this->goHome();
+            }
+        }
+
+        return $this->render('index', [
+            'modelOrder' => $modelOrder,
+        ]);
     }
 
     /**
