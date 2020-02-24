@@ -9,6 +9,8 @@ use yii\web\Controller;
 use yii\web\Response;
 use app\models\LoginForm;
 use app\models\SignupForm;
+use app\models\Order;
+use yii\data\ActiveDataProvider;
 
 class SiteController extends Controller
 {
@@ -136,5 +138,55 @@ class SiteController extends Controller
         return $this->render('signup', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Displays order history.
+     *
+     * @return string
+     */
+    public function actionOrder_history()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => Order::find(),
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+        return $this->render('order_history', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Displays a single news model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionView_order($id)
+    {
+        return $this->render('order_view', [
+            'model' => $this->findOrderModel($id),
+        ]);
+    }
+    /**
+     * Finds the news model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Order the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findOrderModel($id)
+    {
+        if (($model = Order::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
     }
 }
