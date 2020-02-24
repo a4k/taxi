@@ -22,8 +22,8 @@ $this->title = 'My Yii Application';
             <p class="lead">Вы можете заказать такси через личный кабинет или стать водителем.</p>
 
             <p>
-                <a class="btn btn-lg btn-success" href="/web/site/signup">Регистрация клиента</a>
-                <a class="btn btn-lg btn-default" href="/web/site/signup_driver">Регистрация водителя</a>
+                <?= Html::a('Регистрация клиента',['signup'],['class' => 'btn btn-lg btn-success']) ?>
+                <?= Html::a('Регистрация водителя',['signup_driver'],['class' => 'btn btn-lg btn-default']) ?>
             </p>
         </div>
 
@@ -67,7 +67,7 @@ $this->title = 'My Yii Application';
                 <ul class="list-group">
                     <li class="list-group-item">
                         <h1 class="heading">
-                            Заказ №<?= $modelCurrentDrive->getId()?>
+                            Заказ №<? print_r($modelCurrentDrive->getId()); ?>
                         </h1>
                     </li>
                     <li class="list-group-item">
