@@ -64,74 +64,77 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $modelOrder = false;
-        $dataProviderDriverHistory = false;
-        $dataProviderDriveAvailable = false;
-        $dataCurrentDrive = false;
+        if (Yii::$app->user->isGuest) {
+            return $this->render('index', []);
+        }
 
-        if (!Yii::$app->user->isGuest) {
-            $userId = Yii::$app->user->identity->getId();
+        $userId = Yii::$app->user->identity->getId();
+        $userGroupId = Yii::$app->user->identity->getGroupId();
 
-            $modelOrder = new OrderForm();
-            if ($modelOrder->load(Yii::$app->request->post()) && $modelOrder->order()) {
-                Yii::$app->session->setFlash('success',
-                    'Спасибо за заказ такси. Можете отследить ваш заказ в истории');
-                return $this->goHome();
-            }
+        $modelOrder = new OrderForm();
+        if ($modelOrder->load(Yii::$app->request->post()) && $modelOrder->order()) {
+            Yii::$app->session->setFlash('success',
+                'Спасибо за заказ такси. Можете отследить ваш заказ в истории');
+            return $this->goHome();
+        }
 
-            $userGroupId = Yii::$app->user->identity->getGroupId();
-            if ($userGroupId == User::GROUP_DRIVER) {
+        if ($userGroupId == User::GROUP_DRIVER) {
 
-                $dataProviderDriverHistory = new ActiveDataProvider([
+            $dataProviderDriverHistory = new ActiveDataProvider([
+                'query' => Order::find()
+                    ->andWhere(['driver_id' => $userId])
+                    ->andWhere(['status' => Order::STATUS_FINISH])
+                    ->orderBy('id'),
+                'pagination' => [
+                    'pageSize' => 20,
+                ],
+            ]);
+
+            $countDrivesCurrent = Order::find()
+                ->andWhere(['driver_id' => $userId])
+                ->andWhere(['or',
+                    ['status' => Order::STATUS_DRIVER_WAITING],
+                    ['status' => Order::STATUS_DRIVING],
+                ])
+                ->count();
+
+            if ($countDrivesCurrent == 0) {
+                $dataProviderDriveAvailable = new ActiveDataProvider([
                     'query' => Order::find()
-                        ->andWhere(['driver_id' => $userId])
-                        ->andWhere(['status' => Order::STATUS_FINISH])
+                        ->where(['status' => Order::STATUS_FREE])
                         ->orderBy('id'),
                     'pagination' => [
                         'pageSize' => 20,
                     ],
                 ]);
-
-                $countDrivesCurrent = Order::find()
+            } else {
+                $dataCurrentDrive = Order::find()
                     ->andWhere(['driver_id' => $userId])
                     ->andWhere(['or',
                         ['status' => Order::STATUS_DRIVER_WAITING],
+                        ['status' => Order::STATUS_PASSENGER_WAITING],
                         ['status' => Order::STATUS_DRIVING],
-                    ])
-                    ->count();
+                    ])->one();
+            }
+            return $this->render('index', [
+                'modelCurrentDrive' => $dataCurrentDrive,
+                'modelOrderDriveHistory' => $dataProviderDriverHistory,
+                'modelOrderDriveAvailable' => $dataProviderDriveAvailable,
+            ]);
+        }
+        elseif ($userGroupId == User::GROUP_CLIENT) {
+            $dataCurrentDrive = Order::find()
+                ->andWhere(['user_id' => $userId])
+                ->andWhere(['<>', 'status', Order::STATUS_FINISH])->one();
 
-                if ($countDrivesCurrent == 0) {
-                    $dataProviderDriveAvailable = new ActiveDataProvider([
-                        'query' => Order::find()
-                            ->where(['status' => Order::STATUS_FREE])
-                            ->orderBy('id'),
-                        'pagination' => [
-                            'pageSize' => 20,
-                        ],
-                    ]);
-                } else {
-                    $dataCurrentDrive = Order::find()
-                        ->andWhere(['driver_id' => $userId])
-                        ->andWhere(['or',
-                            ['status' => Order::STATUS_DRIVER_WAITING],
-                            ['status' => Order::STATUS_PASSENGER_WAITING],
-                            ['status' => Order::STATUS_DRIVING],
-                        ])->one();
-                }
-            }
-            elseif ($userGroupId == User::GROUP_CLIENT) {
-                $dataCurrentDrive = Order::find()
-                    ->andWhere(['user_id' => $userId])
-                    ->andWhere(['<>', 'status', Order::STATUS_FINISH])->one();
-            }
+            return $this->render('index', [
+                'modelOrder' => $modelOrder,
+                'modelCurrentDrive' => $dataCurrentDrive,
+            ]);
         }
 
-        return $this->render('index', [
-            'modelOrder' => $modelOrder,
-            'modelCurrentDrive' => $dataCurrentDrive,
-            'modelOrderDriveHistory' => $dataProviderDriverHistory,
-            'modelOrderDriveAvailable' => $dataProviderDriveAvailable,
-        ]);
+        return $this->render('index', []);
+
     }
 
     /**
