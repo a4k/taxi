@@ -7,6 +7,10 @@ use yii\web\IdentityInterface;
 
 class User extends ActiveRecord implements IdentityInterface
 {
+    const GROUP_CLIENT = 'CLIENT';
+    const GROUP_DRIVER = 'DRIVER';
+    const GROUP_ADMIN = 'ADMIN';
+
     public $auth_key;
 
     public static function tableName()

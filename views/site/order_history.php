@@ -6,6 +6,7 @@
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
+use app\models\Order;
 
 $this->title = 'История заказов';
 $this->params['breadcrumbs'][] = $this->title;
@@ -17,44 +18,55 @@ $this->params['breadcrumbs'][] = $this->title;
 
     use yii\grid\GridView;
 
-    echo GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            [
-                'attribute' => 'id',
-                'label' => 'Номер заказа',
+    if($dataProvider) {
+        echo GridView::widget([
+            'dataProvider' => $dataProvider,
+            'emptyText' => 'Список заказов пуст',
+            'columns' => [
+                [
+                    'attribute' => 'id',
+                    'label' => 'Номер заказа',
+                ],
+                [
+                    'attribute' => 'created_at',
+                    'label' => 'Дата создания',
+                    'format' => 'datetime',
+                ],
+                [
+                    'attribute' => 'from',
+                    'label' => 'Откуда',
+                ],
+                [
+                    'attribute' => 'to',
+                    'label' => 'Куда',
+                ],
+                [
+                    'label' => 'Класс поездки',
+                    'attribute' => 'drive_class',
+                    'value' => function ($data) {
+                        return Order::getDriveClass($data->drive_class);
+                    },
+                ],
+                [
+                    'label' => 'Статус',
+                    'attribute' => 'status',
+                    'value' => function ($data) {
+                        return Order::getStatus($data->status);
+                    },
+                ],
+                [
+                    'label' => 'Ссылка',
+                    'format' => 'raw',
+                    'value' => function ($data) {
+                        return Html::a('Просмотр', ['view_order', 'id' => $data->id]);
+                    },
+                ],
             ],
-            [
-                'attribute' => 'created_at',
-                'label' => 'Дата создания',
-                'format' => 'datetime',
-            ],
-            [
-                'label' => 'Класс поездки',
-                'attribute' => 'drive_class',
-                'value' => function ($data) {
-                    $driveClass = ['ECONOM' => 'Эконом', 'COMFORT' => 'Комфорт', 'CHILDREN' => 'Детский'];
-                    return $driveClass[$data->drive_class];
-                },
-            ],
-            [
-                'label' => 'Статус',
-                'attribute' => 'status',
-                'value' => function ($data) {
-                    $status = ['FREE' => 'Подбираем подходящего водителя',
-                        'DRIVE_WAITING' => 'Ожидайте водителя', 'DRIVING' => 'В пути'];
-                    return $status[$data->status];
-                },
-            ],
-            [
-                'label' => 'Ссылка',
-                'format' => 'raw',
-                'value' => function ($data) {
-                    return Html::a('Просмотр', ['view_order', 'id' => $data->id]);
-                }
-            ],
-        ],
-    ]);
+        ]);
+    } else {
+        print_r('Список заказов пуст');
+    }
+
     ?>
 
 </div>

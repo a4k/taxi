@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\OrderForm;
+use app\models\SignupDriverForm;
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -63,17 +65,72 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $modelOrder = false;
+        $dataProviderDriverHistory = false;
+        $dataProviderDriveAvailable = false;
+        $dataCurrentDrive = false;
+
         if (!Yii::$app->user->isGuest) {
+            $userId = Yii::$app->user->identity->getId();
+
             $modelOrder = new OrderForm();
             if ($modelOrder->load(Yii::$app->request->post()) && $modelOrder->order()) {
                 Yii::$app->session->setFlash('success',
                     'Спасибо за заказ такси. Можете отследить ваш заказ в истории');
                 return $this->goHome();
             }
+
+            $userGroupId = Yii::$app->user->identity->getGroupId();
+            if ($userGroupId == User::GROUP_DRIVER) {
+
+                $dataProviderDriverHistory = new ActiveDataProvider([
+                    'query' => Order::find()
+                        ->andWhere(['driver_id' => $userId])
+                        ->andWhere(['status' => Order::STATUS_FINISH])
+                        ->orderBy('id'),
+                    'pagination' => [
+                        'pageSize' => 20,
+                    ],
+                ]);
+
+                $countDrivesCurrent = Order::find()
+                    ->andWhere(['driver_id' => $userId])
+                    ->andWhere(['or',
+                        ['status' => Order::STATUS_DRIVER_WAITING],
+                        ['status' => Order::STATUS_DRIVING],
+                    ])
+                    ->count();
+
+                if ($countDrivesCurrent == 0) {
+                    $dataProviderDriveAvailable = new ActiveDataProvider([
+                        'query' => Order::find()
+                            ->where(['status' => Order::STATUS_FREE])
+                            ->orderBy('id'),
+                        'pagination' => [
+                            'pageSize' => 20,
+                        ],
+                    ]);
+                } else {
+                    $dataCurrentDrive = Order::find()
+                        ->andWhere(['driver_id' => $userId])
+                        ->andWhere(['or',
+                            ['status' => Order::STATUS_DRIVER_WAITING],
+                            ['status' => Order::STATUS_PASSENGER_WAITING],
+                            ['status' => Order::STATUS_DRIVING],
+                        ])->one();
+                }
+            }
+            elseif ($userGroupId == User::GROUP_CLIENT) {
+                $dataCurrentDrive = Order::find()
+                    ->andWhere(['user_id' => $userId])
+                    ->andWhere(['<>', 'status', Order::STATUS_FINISH])->one();
+            }
         }
 
         return $this->render('index', [
             'modelOrder' => $modelOrder,
+            'modelCurrentDrive' => $dataCurrentDrive,
+            'modelOrderDriveHistory' => $dataProviderDriverHistory,
+            'modelOrderDriveAvailable' => $dataProviderDriveAvailable,
         ]);
     }
 
@@ -141,6 +198,24 @@ class SiteController extends Controller
     }
 
     /**
+     * Signs user up.
+     *
+     * @return mixed
+     */
+    public function actionSignup_driver()
+    {
+        $model = new SignupDriverForm();
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            Yii::$app->session->setFlash('success', 'Спасибо за регистрацию. Теперь вы можете войти в личный кабинет.');
+            return $this->goHome();
+        }
+
+        return $this->render('signup_driver', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
      * Displays order history.
      *
      * @return string
@@ -151,8 +226,9 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
+        $userId = Yii::$app->user->identity->getId();
         $dataProvider = new ActiveDataProvider([
-            'query' => Order::find(),
+            'query' => Order::find()->where(['user_id' => $userId])->orderBy('id DESC'),
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -174,6 +250,7 @@ class SiteController extends Controller
             'model' => $this->findOrderModel($id),
         ]);
     }
+
     /**
      * Finds the news model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -188,5 +265,61 @@ class SiteController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+
+    /**
+     * Displays a single news model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionOrder_accept($id)
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $userId = Yii::$app->user->identity->getId();
+        $currentOrder = Order::findOne($id);
+
+        if (strlen($currentOrder->driver_id) > 0 && $currentOrder->driver_id != $userId) {
+            Yii::$app->session->setFlash('success',
+                'Заказ выполняет другой водитель');
+            return $this->goHome();
+        }
+
+        $queryOrderType = Yii::$app->getRequest()->getQueryParam('type');
+
+        if ($currentOrder->status == Order::STATUS_FREE) {
+
+            $currentOrder->status = Order::STATUS_DRIVER_WAITING;
+            $currentOrder->driver_id = $userId;
+            $currentOrder->save();
+        } else if ($currentOrder->status == Order::STATUS_DRIVER_WAITING) {
+
+            if (isset($queryOrderType) && strlen($queryOrderType) > 0
+                && strtoupper($queryOrderType) == Order::STATUS_PASSENGER_WAITING) {
+                $currentOrder->status = Order::STATUS_PASSENGER_WAITING;
+                $currentOrder->save();
+            }
+        } else if ($currentOrder->status == Order::STATUS_PASSENGER_WAITING) {
+
+            if (isset($queryOrderType) && strlen($queryOrderType) > 0
+                && strtoupper($queryOrderType) == Order::STATUS_DRIVING) {
+                $currentOrder->status = Order::STATUS_DRIVING;
+                $currentOrder->save();
+            }
+        } else if ($currentOrder->status == Order::STATUS_DRIVING) {
+
+            if (isset($queryOrderType) && strlen($queryOrderType) > 0
+                && strtoupper($queryOrderType) == Order::STATUS_FINISH) {
+                $currentOrder->status = Order::STATUS_FINISH;
+                $currentOrder->save();
+            }
+        }
+
+        return $this->render('order_accept', [
+            'model' => $this->findOrderModel($id),
+        ]);
     }
 }

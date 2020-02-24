@@ -2,6 +2,14 @@
 
 /* @var $this yii\web\View */
 /* @var $modelOrder app\models\OrderForm */
+/* @var $modelOrderDriveHistory yii\data\ActiveDataProvider */
+
+/* @var $modelOrderDriveAvailable yii\data\ActiveDataProvider */
+
+/* @var $modelCurrentDrive app\models\Order */
+
+use yii\helpers\Html;
+use app\models\Order;
 
 $this->title = 'My Yii Application';
 ?>
@@ -55,14 +63,53 @@ $this->title = 'My Yii Application';
 
         if ($userGroupId == 'CLIENT'):?>
 
+            <? if ($modelCurrentDrive): ?>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <h1 class="heading">
+                            Заказ №<?= $modelCurrentDrive->getId()?>
+                        </h1>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Статус:</b> <?= Order::getStatus($modelCurrentDrive->status)?>
+                    </li>
+                    <li class="list-group-item"><?= Html::a('Просмотр заказа',
+                            ['order_view', 'id' => $modelCurrentDrive->getId()],
+                            ['class' => 'btn btn-primary']) ?></li>
+                </ul>
+
+            <? endif; ?>
+
             <div class="body-content">
+                <?= Html::a('История заказов', ['order_history'], ['class' => 'btn btn-default']) ?>
 
                 <?= $this->render('order', ['model' => $modelOrder]); ?>
 
             </div>
-        <? elseif ($userGroupId == 'DRIVER'):?>
+        <? elseif ($userGroupId == 'DRIVER'): ?>
+            <? if ($modelCurrentDrive): ?>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <h1 class="heading">
+                            Заказ №<?= $modelCurrentDrive->getId()?>
+                        </h1>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Статус:</b> <?= Order::getStatusForDriver($modelCurrentDrive->status)?>
+                    </li>
+                    <li class="list-group-item"><?= Html::a('Управление заказом',
+                            ['order_accept', 'id' => $modelCurrentDrive->getId()],
+                            ['class' => 'btn btn-primary']) ?></li>
+                </ul>
 
-        <? elseif ($userGroupId == 'ADMIN'):?>
+            <? endif; ?>
+
+            <? if ($modelOrderDriveAvailable): ?>
+                <?= $this->render('order_available', ['dataProvider' => $modelOrderDriveAvailable]); ?>
+            <? endif; ?>
+            <?= $this->render('order_driver_history', ['dataProvider' => $modelOrderDriveHistory]); ?>
+
+        <? elseif ($userGroupId == 'ADMIN'): ?>
 
         <? endif; ?>
 

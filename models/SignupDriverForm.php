@@ -2,15 +2,16 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 /**
- * SignupForm is the model behind the login form.
+ * SignupDriverForm is the model behind the login form.
  *
  * @property User|null $user This property is read-only.
  *
  */
-class SignupForm extends Model
+class SignupDriverForm extends Model
 {
     public $username;
     public $phone;
@@ -24,17 +25,16 @@ class SignupForm extends Model
     {
         return [
             ['username', 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => 'app\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'required', 'message' => 'Заполните логин'],
+            ['username', 'unique', 'targetClass' => 'app\models\User', 'message' => 'Пользователь с таким логином существует.'],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['phone', 'trim'],
-            ['phone', 'required'],
-//            ['phone', 'phone'],
+            ['phone', 'required', 'message' => 'Заполните телефон'],
             ['phone', 'string', 'max' => 255],
-            ['phone', 'unique', 'targetClass' => 'app\models\User', 'message' => 'This phone address has already been taken.'],
+            ['phone', 'unique', 'targetClass' => 'app\models\User', 'message' => 'Пользователь с таким телефоном существует.'],
 
-            ['password', 'required'],
+            ['password', 'required', 'message' => 'Заполните пароль'],
             ['password', 'string', 'min' => 6],
         ];
     }
@@ -53,6 +53,7 @@ class SignupForm extends Model
         $user = new User();
         $user->username = $this->username;
         $user->phone = $this->phone;
+        $user->group_id = User::GROUP_DRIVER;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         return $user->save();

@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use app\widgets\Alert;
@@ -9,6 +10,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
+use app\models\User;
 
 AppAsset::register($this);
 ?>
@@ -40,8 +42,11 @@ AppAsset::register($this);
         'items' => [
             ['label' => 'Главная', 'url' => ['/site/index']],
             ['label' => 'О нас', 'url' => ['/site/about']],
+            (!Yii::$app->user->isGuest && Yii::$app->user->identity->getGroupId() == User::GROUP_CLIENT) ? (
+            ['label' => 'История заказов', 'url' => ['/site/order_history']]
+            ) : (''),
             Yii::$app->user->isGuest ? (
-                ['label' => 'Войти', 'url' => ['/site/login']]
+            ['label' => 'Войти', 'url' => ['/site/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
