@@ -87,7 +87,7 @@ $this->title = 'My Yii Application';
 
             </div>
         <? elseif ($userGroupId == 'DRIVER'): ?>
-            <? if (!is_null($modelCurrentDrive) && $modelCurrentDrive): ?>
+            <? if (!empty($modelCurrentDrive) && $modelCurrentDrive): ?>
                 <ul class="list-group">
                     <li class="list-group-item">
                         <h1 class="heading">
