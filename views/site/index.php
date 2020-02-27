@@ -87,7 +87,7 @@ $this->title = 'My Yii Application';
 
             </div>
         <? elseif ($userGroupId == 'DRIVER'): ?>
-            <? if (!empty($modelCurrentDrive) && $modelCurrentDrive): ?>
+            <? if (!empty($modelCurrentDrive)): ?>
                 <ul class="list-group">
                     <li class="list-group-item">
                         <h1 class="heading">
@@ -104,7 +104,7 @@ $this->title = 'My Yii Application';
 
             <? endif; ?>
 
-            <? if ($modelOrderDriveAvailable): ?>
+            <? if (!empty($modelOrderDriveAvailable)): ?>
                 <?= $this->render('order_available', ['dataProvider' => $modelOrderDriveAvailable]); ?>
             <? endif; ?>
             <?= $this->render('order_driver_history', ['dataProvider' => $modelOrderDriveHistory]); ?>
