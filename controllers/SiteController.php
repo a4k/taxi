@@ -107,6 +107,10 @@ class SiteController extends Controller
                         'pageSize' => 20,
                     ],
                 ]);
+                return $this->render('index', [
+                    'modelOrderDriveHistory' => $dataProviderDriverHistory,
+                    'modelOrderDriveAvailable' => $dataProviderDriveAvailable,
+                ]);
             } else {
                 $dataCurrentDrive = Order::find()
                     ->andWhere(['driver_id' => $userId])
@@ -115,12 +119,11 @@ class SiteController extends Controller
                         ['status' => Order::STATUS_PASSENGER_WAITING],
                         ['status' => Order::STATUS_DRIVING],
                     ])->one();
+                return $this->render('index', [
+                    'modelCurrentDrive' => $dataCurrentDrive,
+                    'modelOrderDriveHistory' => $dataProviderDriverHistory,
+                ]);
             }
-            return $this->render('index', [
-                'modelCurrentDrive' => $dataCurrentDrive,
-                'modelOrderDriveHistory' => $dataProviderDriverHistory,
-                'modelOrderDriveAvailable' => $dataProviderDriveAvailable,
-            ]);
         }
         elseif ($userGroupId == User::GROUP_CLIENT) {
             $dataCurrentDrive = Order::find()
