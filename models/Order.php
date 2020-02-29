@@ -95,4 +95,9 @@ class Order extends ActiveRecord
         return $this->phone;
     }
 
+
+    public function getDriver()
+    {
+        return $this->hasOne(User::className(), ['id' => 'driver_id']);
+    }
 }

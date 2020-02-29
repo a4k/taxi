@@ -19,6 +19,9 @@ class m200222_152300_users extends Migration
             'photo' => $this->string(),
             'group_id' => $this->string()->defaultValue('CLIENT'),
             'access_token' => $this->string(),
+            'car_name' => $this->string(),
+            'car_color' => $this->string(),
+            'car_number' => $this->string(),
         ]);
 
         $this->insert('users', [

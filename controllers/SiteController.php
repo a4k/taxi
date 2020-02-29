@@ -252,8 +252,10 @@ class SiteController extends Controller
      */
     public function actionOrder_view($id)
     {
+        $order = Order::find()->joinWith('driver')->where(['orders.id' => $id])->one();
+
         return $this->render('order_view', [
-            'model' => $this->findOrderModel($id),
+            'model' => $order,
         ]);
     }
 
