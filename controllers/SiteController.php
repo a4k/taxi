@@ -250,7 +250,7 @@ class SiteController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView_order($id)
+    public function actionOrder_view($id)
     {
         return $this->render('order_view', [
             'model' => $this->findOrderModel($id),
